@@ -4,19 +4,19 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/jrasell/unpacker/builtin/amazon"
-	"github.com/jrasell/unpacker/helper/diff"
+	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ec2"
-	"github.com/aws/aws-sdk-go/aws"
+	"github.com/jrasell/unpacker/builtin/amazon"
+	"github.com/jrasell/unpacker/helper/diff"
 )
 
 var (
-	dryrun    bool
-	region    string
-	tagKey    string
+	dryrun   bool
+	region   string
+	tagKey   string
 	tagValue string
-	vrsn      bool
+	vrsn     bool
 
 	instKill []string
 	saveSg   []string
@@ -57,12 +57,12 @@ func main() {
 	allKp := amazon.GetPackerKeyPairs(svc)
 	allSg := amazon.GetPackerSecurityGroups(svc)
 
-	for _,i := range allIn.ToSave {
+	for _, i := range allIn.ToSave {
 		saveSg = append(saveSg, i.Sg)
 		saveKp = append(saveKp, i.Kp)
 	}
 
-	for _,i := range allIn.ToKill {
+	for _, i := range allIn.ToKill {
 		instKill = append(instKill, i.ID)
 	}
 
@@ -89,16 +89,16 @@ func main() {
 		}
 	}
 
-	for _,k := range allKp {
+	for _, k := range allKp {
 		amazon.DeletePackerKeyPair(svc, k)
 	}
-	for _,s := range allSg {
+	for _, s := range allSg {
 		amazon.DeletePackerSecurityGroup(svc, s)
 	}
 	fmt.Println("Unpacker completed successfully")
 }
 
-func dryRun (in, kp, sg []string) {
+func dryRun(in, kp, sg []string) {
 
 	for _, i := range in {
 		fmt.Printf("Terminating instance %v - DRYRUN\n", i)
